@@ -1,25 +1,14 @@
 from heapq import heappush, heappop, heapify
-from abc import ABC, abstractmethod
 
 
-class PacketBuffer(ABC):
-  @abstractmethod
-  def add_packet(self, packet):
-    pass
-
-  @abstractmethod
-  def pop_packet(self):
-    pass
-
-
-class FCFSPacketBuffer(PacketBuffer):
+class FCFSPacketBuffer:
   def __init__(self, capacity):
     self.queue = []
     self.capacity = capacity
 
-  def add_packet(self, packet):
+  def add_packet(self, packet, current_time):
     if (self.capacity - packet.size) >= 0:
-      heappush(self.queue, (packet.arrival_time, packet))
+      heappush(self.queue, (current_time, packet))
       self.capacity -= packet.size
       return True
     else:
@@ -44,12 +33,12 @@ class FCFSPacketBuffer(PacketBuffer):
     heapify(self.queue)
 
 
-class InfiniteFCFSPacketBuffer(PacketBuffer):
+class InfiniteFCFSPacketBuffer:
   def __init__(self):
     self.queue = []
 
-  def add_packet(self, packet):
-    heappush(self.queue, (packet.arrival_time, packet))
+  def add_packet(self, packet, current_time):
+    heappush(self.queue, (current_time, packet))
     return True
 
   def pop_packet(self):
